@@ -136,6 +136,7 @@
     background-image:
       repeating-linear-gradient(45deg, transparent, transparent 18px, rgba(255,255,255,.018) 18px, rgba(255,255,255,.018) 36px),
       repeating-linear-gradient(-45deg, transparent, transparent 18px, rgba(255,255,255,.012) 18px, rgba(255,255,255,.012) 36px);
+    pointer-events: none;
   }
   /* Diagonal gold slash */
   .hero::after {
@@ -144,6 +145,7 @@
     background: var(--army-gold);
     transform: skewX(-6deg);
     box-shadow: 12px 0 0 rgba(200,149,42,.25);
+    pointer-events: none;
   }
   .hero-emblem-zone {
     position: relative; z-index: 2;
@@ -184,14 +186,22 @@
   .card h4 { font-family: 'Oswald', sans-serif; font-size: 16px; color: var(--army-dark); margin-bottom: 8px; }
   .card p { font-size: 13px; color: #666; line-height: 1.5; }
 
-  /* VIDEO GRID */
-  .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
-  .video-card { background: white; border: 1px solid #ddd; overflow: hidden; }
-  .video-thumb { background: var(--army-dark); height: 120px; display: flex; align-items: center; justify-content: center; }
-  .play-btn { width: 40px; height: 40px; background: var(--army-gold); clip-path: polygon(20% 0%, 100% 50%, 20% 100%); margin-left: 6px; }
-  .video-info { padding: 12px; }
-  .video-info h4 { font-family: 'Oswald', sans-serif; font-size: 14px; color: var(--army-dark); margin-bottom: 4px; }
-  .video-info p { font-size: 12px; color: #888; }
+  /* YOUTUBE EMBED */
+  .yt-embed-box {
+    position: relative; width: 100%; padding-bottom: 56.25%;
+    background: #000; margin-bottom: 16px; border: 2px solid var(--army-gold);
+  }
+  .yt-embed-box iframe {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;
+  }
+  .yt-search-btn-wrap { margin-bottom: 20px; }
+  .yt-search-btn {
+    display: inline-block; background: #ff0000; color: white;
+    padding: 10px 20px; font-family: 'Oswald', sans-serif;
+    font-size: 13px; letter-spacing: 1px; text-decoration: none;
+    transition: background .2s;
+  }
+  .yt-search-btn:hover { background: #cc0000; }
 
   /* GALLERY */
   .gallery-section { margin-bottom: 32px; }
@@ -530,40 +540,73 @@
     <!-- VIDEO TUTORIAL PAGES -->
     <div class="page" id="page-vid-beret">
       <div class="page-header"><h2>How To Shape a Beret</h2><p>Video Tutorial</p></div>
-      <div class="video-grid">
-        <div class="video-card">
-          <div class="video-thumb"><div class="play-btn"></div></div>
-          <div class="video-info"><h4>Shaping Your Beret</h4><p>Step-by-step tutorial</p></div>
-        </div>
+      <div class="yt-embed-box">
+        <iframe src="https://www.youtube.com/embed?listType=search&list=how+to+shape+army+JROTC+beret" allowfullscreen></iframe>
       </div>
-      <div class="edit-hint">✏ Click below to edit</div>
+      <div class="yt-search-btn-wrap">
+        <a class="yt-search-btn" href="https://www.youtube.com/results?search_query=how+to+shape+army+JROTC+beret" target="_blank">🔍 Search YouTube: How To Shape a Beret</a>
+      </div>
+      <div class="edit-hint">✏ Admin: Paste a specific YouTube embed URL above once you pick a video</div>
       <div class="content-body editable-area" contenteditable="false" style="margin-top:20px">
-        <p>Add a YouTube embed link or additional instructions here. Proper beret shaping is an important part of maintaining a professional military appearance.</p>
+        <h3>Quick Steps</h3>
+        <p>1. Shave the beret inside and out with a disposable razor until smooth. 2. Soak in warm (not hot) water. 3. Place on your head, center the flash over your left eye. 4. Fold excess material toward your right ear. 5. Let it dry on your head or a mannequin. 6. Repeat as needed until it holds its shape.</p>
       </div>
     </div>
+
     <div class="page" id="page-vid-tie">
       <div class="page-header"><h2>How To Tie a Tie</h2><p>Video Tutorial</p></div>
-      <div class="video-grid"><div class="video-card"><div class="video-thumb"><div class="play-btn"></div></div><div class="video-info"><h4>Tying Your Tie</h4><p>Step-by-step tutorial</p></div></div></div>
-      <div class="edit-hint">✏ Click below to edit</div>
-      <div class="content-body editable-area" contenteditable="false" style="margin-top:20px"><p>Add instructions or video embed here.</p></div>
+      <div class="yt-embed-box">
+        <iframe src="https://www.youtube.com/embed?listType=search&list=how+to+tie+a+tie+JROTC+army+uniform" allowfullscreen></iframe>
+      </div>
+      <div class="yt-search-btn-wrap">
+        <a class="yt-search-btn" href="https://www.youtube.com/results?search_query=how+to+tie+a+tie+JROTC+army+uniform" target="_blank">🔍 Search YouTube: How To Tie a Tie (JROTC)</a>
+      </div>
+      <div class="edit-hint">✏ Admin: Paste a specific YouTube embed URL above once you pick a video</div>
+      <div class="content-body editable-area" contenteditable="false" style="margin-top:20px">
+        <p>The JROTC black necktie is worn with a four-in-hand or modified Windsor knot. The front of the tie must be longer than the rear, pulled up to cover the collar button of the blouse/shirt. Tie clasps are not authorized.</p>
+      </div>
     </div>
+
     <div class="page" id="page-vid-bun">
-      <div class="page-header"><h2>How to Make a Bun</h2><p>Video Tutorial</p></div>
-      <div class="video-grid"><div class="video-card"><div class="video-thumb"><div class="play-btn"></div></div><div class="video-info"><h4>Hair Bun Tutorial</h4><p>For female cadets</p></div></div></div>
-      <div class="edit-hint">✏ Click below to edit</div>
-      <div class="content-body editable-area" contenteditable="false" style="margin-top:20px"><p>Add instructions or video embed here.</p></div>
+      <div class="page-header"><h2>How to Make a Bun</h2><p>Video Tutorial · Female Cadets</p></div>
+      <div class="yt-embed-box">
+        <iframe src="https://www.youtube.com/embed?listType=search&list=how+to+make+a+bun+army+JROTC+female+uniform" allowfullscreen></iframe>
+      </div>
+      <div class="yt-search-btn-wrap">
+        <a class="yt-search-btn" href="https://www.youtube.com/results?search_query=how+to+make+military+bun+army+JROTC+female" target="_blank">🔍 Search YouTube: Military Bun Tutorial (JROTC)</a>
+      </div>
+      <div class="edit-hint">✏ Admin: Paste a specific YouTube embed URL above once you pick a video</div>
+      <div class="content-body editable-area" contenteditable="false" style="margin-top:20px">
+        <p>Female cadets must wear hair in a neat bun when in uniform. Hair must be secured and not extend below the bottom edge of the collar. Use bobby pins and a hair net to keep the bun tight and professional.</p>
+      </div>
     </div>
+
     <div class="page" id="page-vid-male">
-      <div class="page-header"><h2>The Male Uniform</h2><p>Video Tutorial</p></div>
-      <div class="video-grid"><div class="video-card"><div class="video-thumb"><div class="play-btn"></div></div><div class="video-info"><h4>Male Uniform Guide</h4><p>Proper wear and appearance</p></div></div></div>
-      <div class="edit-hint">✏ Click below to edit</div>
-      <div class="content-body editable-area" contenteditable="false" style="margin-top:20px"><p>Add instructions or video embed here.</p></div>
+      <div class="page-header"><h2>The Male Uniform</h2><p>Video Tutorial · Proper Wear Guide</p></div>
+      <div class="yt-embed-box">
+        <iframe src="https://www.youtube.com/embed?listType=search&list=army+JROTC+male+uniform+proper+wear+class+A" allowfullscreen></iframe>
+      </div>
+      <div class="yt-search-btn-wrap">
+        <a class="yt-search-btn" href="https://www.youtube.com/results?search_query=army+JROTC+male+uniform+proper+wear+class+A" target="_blank">🔍 Search YouTube: JROTC Male Uniform Guide</a>
+      </div>
+      <div class="edit-hint">✏ Admin: Paste a specific YouTube embed URL above once you pick a video</div>
+      <div class="content-body editable-area" contenteditable="false" style="margin-top:20px">
+        <p>The Class A male uniform includes the Army blue coat, trousers, gray long or short sleeve shirt, black necktie, beret, black web belt with brass buckle, black dress shoes, and black socks. All brass must be polished. Ribbons, badges, and insignia must be properly placed.</p>
+      </div>
     </div>
+
     <div class="page" id="page-vid-female">
-      <div class="page-header"><h2>The Female Uniform</h2><p>Video Tutorial</p></div>
-      <div class="video-grid"><div class="video-card"><div class="video-thumb"><div class="play-btn"></div></div><div class="video-info"><h4>Female Uniform Guide</h4><p>Proper wear and appearance</p></div></div></div>
-      <div class="edit-hint">✏ Click below to edit</div>
-      <div class="content-body editable-area" contenteditable="false" style="margin-top:20px"><p>Add instructions or video embed here.</p></div>
+      <div class="page-header"><h2>The Female Uniform</h2><p>Video Tutorial · Proper Wear Guide</p></div>
+      <div class="yt-embed-box">
+        <iframe src="https://www.youtube.com/embed?listType=search&list=army+JROTC+female+uniform+proper+wear+class+A" allowfullscreen></iframe>
+      </div>
+      <div class="yt-search-btn-wrap">
+        <a class="yt-search-btn" href="https://www.youtube.com/results?search_query=army+JROTC+female+uniform+proper+wear+class+A" target="_blank">🔍 Search YouTube: JROTC Female Uniform Guide</a>
+      </div>
+      <div class="edit-hint">✏ Admin: Paste a specific YouTube embed URL above once you pick a video</div>
+      <div class="content-body editable-area" contenteditable="false" style="margin-top:20px">
+        <p>The Class A female uniform includes the Army blue coat, slacks or skirt, gray shirt, neck tab, beret, black dress shoes, and black socks. Hair must be worn in a bun. All insignia must be properly placed per AR 670-1 standards.</p>
+      </div>
     </div>
 
     <!-- CALENDAR -->
@@ -964,4 +1007,30 @@
     });
   }
   function saveChanges() {
-    
+    const data = {};
+    document.querySelectorAll('.editable-area').forEach((el, i) => {
+      data['block_' + i] = el.innerHTML;
+    });
+    localStorage.setItem('jrotc_content', JSON.stringify(data));
+    alert('✔ Changes saved!');
+  }
+
+  function restoreContent() {
+    try {
+      const saved = localStorage.getItem('jrotc_content');
+      if (!saved) return;
+      const data = JSON.parse(saved);
+      document.querySelectorAll('.editable-area').forEach((el, i) => {
+        if (data['block_' + i]) el.innerHTML = data['block_' + i];
+      });
+    } catch(e) {}
+  }
+  restoreContent();
+
+  // Enter key on login
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && document.getElementById('loginModal').classList.contains('open')) doLogin();
+  });
+</script>
+</body>
+</html>
