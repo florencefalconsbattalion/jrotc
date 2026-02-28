@@ -933,104 +933,147 @@
 </div>
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-  // ── NAVIGATION ──
-  document.querySelectorAll('.nav-link').forEach(link => {
-    link.addEventListener('click', e => {
-      e.preventDefault();
-      const pageId = link.dataset.page;
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-      const target = document.getElementById('page-' + pageId);
-      if (target) {
-        target.classList.add('active');
-        link.classList.add('active');
-      }
-    });
-  });
+(function() {
+  'use strict';
 
-  function toggleSub(el) {
-    const sub = el.nextElementSibling;
-    const arrow = el.querySelector('.nav-arrow');
+  // ── NAVIGATION ──
+  function showPage(pageId) {
+    var pages = document.querySelectorAll('.page');
+    for (var i = 0; i < pages.length; i++) {
+      pages[i].classList.remove('active');
+    }
+    var target = document.getElementById('page-' + pageId);
+    if (target) target.classList.add('active');
+
+    var links = document.querySelectorAll('.nav-link');
+    for (var j = 0; j < links.length; j++) {
+      links[j].classList.remove('active');
+      if (links[j].dataset.page === pageId) {
+        links[j].classList.add('active');
+      }
+    }
+    // scroll main to top
+    var main = document.querySelector('main');
+    if (main) main.scrollTop = 0;
+  }
+
+  // Attach nav link clicks
+  var navLinks = document.querySelectorAll('.nav-link');
+  for (var i = 0; i < navLinks.length; i++) {
+    (function(link) {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        showPage(link.dataset.page);
+      });
+    })(navLinks[i]);
+  }
+
+  // ── SUBMENU TOGGLE ──
+  window.toggleSub = function(el) {
+    var sub = el.nextElementSibling;
+    var arrow = el.querySelector('.nav-arrow');
     if (sub) sub.classList.toggle('open');
     if (arrow) arrow.classList.toggle('open');
-  }
+  };
 
-  function toggleFAQ(el) {
-    const ans = el.nextElementSibling;
-    const sign = el.querySelector('span');
-    ans.classList.toggle('open');
-    if (sign) sign.textContent = ans.classList.contains('open') ? '−' : '+';
-  }
+  // ── FAQ TOGGLE ──
+  window.toggleFAQ = function(el) {
+    var ans = el.nextElementSibling;
+    var sign = el.querySelector('span');
+    if (ans) ans.classList.toggle('open');
+    if (sign) sign.textContent = (ans && ans.classList.contains('open')) ? '−' : '+';
+  };
 
   // ── ADMIN AUTH ──
-  // Default credentials (change these!)
-  const ADMIN_USER = 'Battalion Staff';
-  const ADMIN_PASS = 'Falcon@6BDE';
-  let isAdmin = false;
+  var ADMIN_USER = 'Battalion Staff';
+  var ADMIN_PASS = 'Falcon@6BDE';
+  var isAdmin = false;
 
-  function openLogin() {
-    if (isAdmin) { logoutAdmin(); return; }
+  window.openLogin = function() {
+    if (isAdmin) { window.logoutAdmin(); return; }
     document.getElementById('loginModal').classList.add('open');
     document.getElementById('loginError').style.display = 'none';
-  }
-  function closeLogin() {
+    document.getElementById('loginUser').value = '';
+    document.getElementById('loginPass').value = '';
+  };
+
+  window.closeLogin = function() {
     document.getElementById('loginModal').classList.remove('open');
-  }
-  function doLogin() {
-    const u = document.getElementById('loginUser').value;
-    const p = document.getElementById('loginPass').value;
+  };
+
+  window.doLogin = function() {
+    var u = document.getElementById('loginUser').value;
+    var p = document.getElementById('loginPass').value;
     if (u === ADMIN_USER && p === ADMIN_PASS) {
       isAdmin = true;
-      closeLogin();
+      window.closeLogin();
       enableAdminMode();
     } else {
       document.getElementById('loginError').style.display = 'block';
     }
-  }
+  };
+
   function enableAdminMode() {
     document.body.classList.add('admin-mode');
     document.getElementById('adminStatus').style.display = 'inline';
     document.getElementById('adminBtn').textContent = 'Logout';
     document.getElementById('adminToolbar').classList.add('visible');
-    document.querySelectorAll('.editable-area').forEach(el => {
-      el.contentEditable = 'true';
-    });
+    var areas = document.querySelectorAll('.editable-area');
+    for (var i = 0; i < areas.length; i++) {
+      areas[i].contentEditable = 'true';
+    }
   }
-  function logoutAdmin() {
+
+  window.logoutAdmin = function() {
     isAdmin = false;
     document.body.classList.remove('admin-mode');
     document.getElementById('adminStatus').style.display = 'none';
     document.getElementById('adminBtn').textContent = 'Admin Login';
     document.getElementById('adminToolbar').classList.remove('visible');
-    document.querySelectorAll('.editable-area').forEach(el => {
-      el.contentEditable = 'false';
-    });
-  }
-  function saveChanges() {
-    const data = {};
-    document.querySelectorAll('.editable-area').forEach((el, i) => {
-      data['block_' + i] = el.innerHTML;
-    });
-    localStorage.setItem('jrotc_content', JSON.stringify(data));
-    alert('✔ Changes saved!');
-  }
+    var areas = document.querySelectorAll('.editable-area');
+    for (var i = 0; i < areas.length; i++) {
+      areas[i].contentEditable = 'false';
+    }
+  };
 
-  function restoreContent() {
+  window.saveChanges = function() {
     try {
-      const saved = localStorage.getItem('jrotc_content');
-      if (!saved) return;
-      const data = JSON.parse(saved);
-      document.querySelectorAll('.editable-area').forEach((el, i) => {
-        if (data['block_' + i]) el.innerHTML = data['block_' + i];
-      });
-    } catch(e) {}
-  }
-  restoreContent();
+      var data = {};
+      var areas = document.querySelectorAll('.editable-area');
+      for (var i = 0; i < areas.length; i++) {
+        data['block_' + i] = areas[i].innerHTML;
+      }
+      localStorage.setItem('jrotc_content', JSON.stringify(data));
+      alert('Changes saved!');
+    } catch(e) {
+      alert('Could not save: ' + e.message);
+    }
+  };
 
-  // Enter key on login
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Enter' && document.getElementById('loginModal').classList.contains('open')) doLogin();
+  // Restore saved content
+  try {
+    var saved = localStorage.getItem('jrotc_content');
+    if (saved) {
+      var data = JSON.parse(saved);
+      var areas = document.querySelectorAll('.editable-area');
+      for (var i = 0; i < areas.length; i++) {
+        if (data['block_' + i]) areas[i].innerHTML = data['block_' + i];
+      }
+    }
+  } catch(e) {}
+
+  // Enter key on login modal
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      var modal = document.getElementById('loginModal');
+      if (modal && modal.classList.contains('open')) {
+        window.doLogin();
+      }
+    }
   });
+
+})();
 </script>
 </body>
 </html>
