@@ -49,12 +49,7 @@
   .header-title p { font-size: 11px; color: var(--army-tan); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 2px; }
 
   .header-right { display: flex; align-items: center; gap: 12px; }
-  #adminBtn {
-    background: transparent; border: 1.5px solid var(--army-gold);
-    color: var(--army-gold); padding: 6px 16px; font-family: 'Oswald', sans-serif;
-    font-size: 13px; letter-spacing: 1px; cursor: pointer; transition: all .2s;
-  }
-  #adminBtn:hover { background: var(--army-gold); color: var(--army-dark); }
+  /* admin btn replaced by dot */
   #adminStatus { font-family: 'Oswald', sans-serif; font-size: 12px; color: #7fba5a; letter-spacing: 1px; display: none; }
 
   /* LAYOUT */
@@ -94,6 +89,7 @@
 
   /* MAIN */
   main { flex: 1; padding: 40px 48px; max-width: 900px; }
+  body.admin-mode main { padding-bottom: 80px; }
   .page { display: none; animation: fadeIn .3s ease; }
   .page.active { display: block; }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
@@ -267,24 +263,161 @@
   .btn-gold { background: var(--army-gold); color: var(--army-dark); }
   .btn-gold:hover { background: #b5831f; color: white; }
 
-  /* MODAL */
-  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 200; align-items: center; justify-content: center; }
-  .modal-overlay.open { display: flex; }
-  .modal { background: white; padding: 36px; width: 380px; position: relative; }
-  .modal h3 { font-family: 'Oswald', sans-serif; font-size: 22px; color: var(--army-dark); margin-bottom: 20px; }
-  .modal-close { position: absolute; top: 12px; right: 16px; background: none; border: none; font-size: 22px; cursor: pointer; color: #999; }
-  #loginError { color: #c0392b; font-size: 13px; margin-top: 8px; display: none; }
+  /* HIDDEN ADMIN DOT */
+  #adminDot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    cursor: pointer; transition: background .3s;
+    display: inline-block;
+  }
+  #adminDot:hover { background: rgba(200,149,42,0.3); }
+  #adminStatus {
+    font-family: 'Oswald', sans-serif; font-size: 12px;
+    color: #7fba5a; letter-spacing: 1px; display: none;
+  }
 
-  /* ADMIN TOOLBAR */
+  /* FANCY LOGIN MODAL */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(6px);
+    z-index: 200; align-items: center; justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+
+  .login-card {
+    background: linear-gradient(160deg, #0d1f3c 0%, #0a1628 60%, #061020 100%);
+    border: 1px solid rgba(200,149,42,0.4);
+    width: 380px; padding: 36px 40px 28px;
+    position: relative; box-shadow: 0 24px 80px rgba(0,0,0,0.7);
+    animation: slideUp .3s ease;
+  }
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%       { transform: translateX(-10px); }
+    40%       { transform: translateX(10px); }
+    60%       { transform: translateX(-6px); }
+    80%       { transform: translateX(6px); }
+  }
+  .login-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, transparent, #c8952a, transparent);
+  }
+  .login-close {
+    position: absolute; top: 14px; right: 16px;
+    background: none; border: none; color: rgba(255,255,255,0.3);
+    font-size: 18px; cursor: pointer; transition: color .2s; line-height: 1;
+  }
+  .login-close:hover { color: white; }
+  .login-emblem {
+    display: flex; justify-content: center; margin-bottom: 16px;
+    filter: drop-shadow(0 4px 12px rgba(200,149,42,0.3));
+  }
+  .login-title {
+    font-family: 'Oswald', sans-serif; font-size: 20px; font-weight: 700;
+    color: white; text-align: center; letter-spacing: 1.5px;
+  }
+  .login-subtitle {
+    font-family: 'Oswald', sans-serif; font-size: 10px; letter-spacing: 2px;
+    color: var(--army-gold); text-align: center; margin-top: 4px; text-transform: uppercase;
+  }
+  .login-divider {
+    width: 40px; height: 2px; background: var(--army-gold);
+    margin: 16px auto; opacity: 0.6;
+  }
+  .login-field { margin-bottom: 16px; }
+  .login-field label {
+    display: block; font-family: 'Oswald', sans-serif; font-size: 10px;
+    letter-spacing: 2px; color: rgba(255,255,255,0.5); margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+  .login-field input {
+    width: 100%; padding: 11px 14px;
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+    color: white; font-family: 'Source Serif 4', serif; font-size: 14px;
+    outline: none; transition: border-color .2s, background .2s;
+  }
+  .login-field input:focus {
+    border-color: var(--army-gold); background: rgba(255,255,255,0.09);
+  }
+  .login-field input::placeholder { color: rgba(255,255,255,0.25); }
+  .pw-wrap { position: relative; }
+  .pw-toggle {
+    position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+    cursor: pointer; font-size: 14px; opacity: 0.4; transition: opacity .2s;
+    user-select: none;
+  }
+  .pw-toggle:hover { opacity: 0.8; }
+  .login-remember {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 16px;
+  }
+  .login-remember input { width: auto; accent-color: var(--army-gold); }
+  .login-remember label {
+    font-family: 'Oswald', sans-serif; font-size: 11px;
+    color: rgba(255,255,255,0.4); letter-spacing: 0.5px; cursor: pointer;
+  }
+  #loginError {
+    color: #e05555; font-size: 12px; margin-bottom: 12px;
+    font-family: 'Oswald', sans-serif; letter-spacing: 0.5px; display: none;
+    background: rgba(224,85,85,0.1); padding: 8px 12px; border-left: 3px solid #e05555;
+  }
+  .login-btn {
+    width: 100%; padding: 12px; background: var(--army-gold);
+    color: var(--army-dark); border: none; font-family: 'Oswald', sans-serif;
+    font-size: 14px; font-weight: 700; letter-spacing: 2px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: background .2s, transform .1s;
+  }
+  .login-btn:hover { background: #d4a030; }
+  .login-btn:active { transform: scale(0.98); }
+  .login-forgot {
+    text-align: center; margin-top: 14px; font-family: 'Oswald', sans-serif;
+    font-size: 11px; color: rgba(255,255,255,0.25); cursor: pointer;
+    letter-spacing: 1px; transition: color .2s;
+  }
+  .login-forgot:hover { color: var(--army-gold); }
+  .login-footer {
+    text-align: center; margin-top: 24px; font-family: 'Oswald', sans-serif;
+    font-size: 9px; letter-spacing: 2px; color: rgba(255,255,255,0.15);
+    text-transform: uppercase; border-top: 1px solid rgba(255,255,255,0.06);
+    padding-top: 14px;
+  }
+
+  /* OLD MODAL (keep for reference but hidden) */
+  .modal { display: none; }
   #adminToolbar {
-    display: none; position: fixed; bottom: 20px; right: 20px;
-    background: var(--army-dark); color: white; padding: 14px 20px;
-    border: 2px solid var(--army-gold); z-index: 150; font-family: 'Oswald', sans-serif;
-    font-size: 13px; letter-spacing: 1px;
+    display: none; position: fixed; bottom: 0; left: 0; right: 0;
+    background: var(--army-dark); color: white; padding: 12px 20px;
+    border-top: 3px solid var(--army-gold); z-index: 150;
+    font-family: 'Oswald', sans-serif; font-size: 13px; letter-spacing: 1px;
   }
   #adminToolbar.visible { display: block; }
-  #adminToolbar p { color: var(--army-gold); margin-bottom: 10px; }
-  #adminToolbar button { background: var(--army-gold); color: var(--army-dark); border: none; padding: 6px 14px; font-family: 'Oswald', sans-serif; cursor: pointer; font-size: 12px; margin-right: 6px; }
+  #adminToolbar p { color: var(--army-gold); margin-bottom: 0; display:inline; margin-right:16px; }
+  #adminToolbar button {
+    background: var(--army-gold); color: var(--army-dark); border: none;
+    padding: 5px 12px; font-family: 'Oswald', sans-serif; cursor: pointer;
+    font-size: 12px; font-weight: 700; transition: opacity .2s;
+  }
+  #adminToolbar button:hover { opacity: 0.8; }
+  /* Editable area highlight in admin mode */
+  body.admin-mode .editable-area {
+    outline: 1.5px dashed rgba(200,149,42,0.5);
+    cursor: text;
+    transition: outline .2s;
+  }
+  body.admin-mode .editable-area:hover {
+    outline: 2px dashed var(--army-gold);
+    background: rgba(200,149,42,0.05);
+  }
+  body.admin-mode .editable-area:focus {
+    outline: 2px solid var(--army-gold);
+    background: rgba(255,253,240,0.95);
+  }
+  body.admin-mode .edit-hint { display: block; }
 
   @media (max-width: 768px) {
     aside { width: 240px; }
@@ -309,8 +442,8 @@
     </div>
   </div>
   <div class="header-right">
-    <span id="adminStatus">● ADMIN MODE</span>
-    <button id="adminBtn" onclick="openLogin()">Admin Login</button>
+    <span id="adminStatus">● ADMIN MODE — <span id="loggedInName"></span></span>
+    <span id="adminDot" onclick="openLogin()" title=""></span>
   </div>
 </header>
 
@@ -482,8 +615,8 @@
 
         <!-- RIGHT: Text content -->
         <div class="hero-content">
-          <div class="hero-badge">U.S. ARMY · 6TH BRIGADE · FLORENCE, ALABAMA</div>
-          <h2><span>Falcon</span> Battalion<br>Florence High School</h2>
+          <div class="hero-badge editable-area" contenteditable="false">U.S. ARMY · 6TH BRIGADE · FLORENCE, ALABAMA</div>
+          <h2 class="editable-area" contenteditable="false"><span>Falcon</span> Battalion<br>Florence High School</h2>
           <div class="hero-divider"></div>
           <div class="edit-hint">✏ Click below to edit</div>
           <p class="editable-area" contenteditable="false">Welcome to the Florence High School Army JROTC Falcon Battalion, proudly serving under the 6th Brigade. Our mission is to motivate young people to be better citizens. We develop character, discipline, and leadership skills that last a lifetime.</p>
@@ -492,7 +625,7 @@
           </div>
         </div>
       </div>
-      <div class="cards">
+      <div class="cards editable-area" contenteditable="false">
         <div class="card">
           <h4>Leadership</h4>
           <p>Develop real-world leadership skills in a structured, supportive environment.</p>
@@ -523,7 +656,7 @@
 
     <!-- SPONSORS -->
     <div class="page" id="page-sponsors">
-      <div class="page-header"><h2>SY2024–2025 Sponsors</h2><p>We thank our generous sponsors for supporting our program.</p></div>
+      <div class="page-header editable-area" contenteditable="false"><h2>SY2024–2025 Sponsors</h2><p>We thank our generous sponsors for supporting our program.</p></div>
       <div class="edit-hint">✏ Click below to edit</div>
       <div class="content-body editable-area" contenteditable="false">
         <p>Our program is made possible by the generous support of our community sponsors. Their contributions help fund uniforms, equipment, competitions, and leadership events for our cadets.</p>
@@ -539,9 +672,10 @@
 
     <!-- VIDEO TUTORIAL PAGES -->
     <div class="page" id="page-vid-beret">
-      <div class="page-header"><h2>How To Shape a Beret</h2><p>Video Tutorial</p></div>
-      <div class="yt-embed-box">
-        <iframe src="https://www.youtube.com/embed?listType=search&list=how+to+shape+army+JROTC+beret" allowfullscreen></iframe>
+      <div class="page-header editable-area" contenteditable="false"><h2>How To Shape a Beret</h2><p>Video Tutorial</p></div>
+      <div class="yt-url-edit editable-area" contenteditable="false" data-yt="beret" style="display:none;background:#fffdf4;border:1.5px dashed #c8952a;padding:8px;margin-bottom:8px;font-family:Oswald,sans-serif;font-size:12px;">✏ ADMIN: Paste YouTube Video ID here (e.g. dQw4w9WgXcQ)</div>
+        <div class="yt-embed-box">
+        <iframe id="yt-beret" src="https://www.youtube.com/embed?listType=search&list=how+to+shape+army+JROTC+beret" allowfullscreen></iframe>
       </div>
       <div class="yt-search-btn-wrap">
         <a class="yt-search-btn" href="https://www.youtube.com/results?search_query=how+to+shape+army+JROTC+beret" target="_blank">🔍 Search YouTube: How To Shape a Beret</a>
@@ -554,7 +688,7 @@
     </div>
 
     <div class="page" id="page-vid-tie">
-      <div class="page-header"><h2>How To Tie a Tie</h2><p>Video Tutorial</p></div>
+      <div class="page-header editable-area" contenteditable="false"><h2>How To Tie a Tie</h2><p>Video Tutorial</p></div>
       <div class="yt-embed-box">
         <iframe src="https://www.youtube.com/embed?listType=search&list=how+to+tie+a+tie+JROTC+army+uniform" allowfullscreen></iframe>
       </div>
@@ -568,7 +702,7 @@
     </div>
 
     <div class="page" id="page-vid-bun">
-      <div class="page-header"><h2>How to Make a Bun</h2><p>Video Tutorial · Female Cadets</p></div>
+      <div class="page-header editable-area" contenteditable="false"><h2>How to Make a Bun</h2><p>Video Tutorial · Female Cadets</p></div>
       <div class="yt-embed-box">
         <iframe src="https://www.youtube.com/embed?listType=search&list=how+to+make+a+bun+army+JROTC+female+uniform" allowfullscreen></iframe>
       </div>
@@ -582,7 +716,7 @@
     </div>
 
     <div class="page" id="page-vid-male">
-      <div class="page-header"><h2>The Male Uniform</h2><p>Video Tutorial · Proper Wear Guide</p></div>
+      <div class="page-header editable-area" contenteditable="false"><h2>The Male Uniform</h2><p>Video Tutorial · Proper Wear Guide</p></div>
       <div class="yt-embed-box">
         <iframe src="https://www.youtube.com/embed?listType=search&list=army+JROTC+male+uniform+proper+wear+class+A" allowfullscreen></iframe>
       </div>
@@ -596,7 +730,7 @@
     </div>
 
     <div class="page" id="page-vid-female">
-      <div class="page-header"><h2>The Female Uniform</h2><p>Video Tutorial · Proper Wear Guide</p></div>
+      <div class="page-header editable-area" contenteditable="false"><h2>The Female Uniform</h2><p>Video Tutorial · Proper Wear Guide</p></div>
       <div class="yt-embed-box">
         <iframe src="https://www.youtube.com/embed?listType=search&list=army+JROTC+female+uniform+proper+wear+class+A" allowfullscreen></iframe>
       </div>
@@ -611,7 +745,7 @@
 
     <!-- CALENDAR -->
     <div class="page" id="page-calendar">
-      <div class="page-header"><h2>JROTC Calendar</h2><p>Upcoming events and important dates</p></div>
+      <div class="page-header editable-area" contenteditable="false"><h2>JROTC Calendar</h2><p>Upcoming events and important dates</p></div>
       <div class="edit-hint">✏ Click below to edit</div>
       <div class="editable-area" contenteditable="false">
         <div class="calendar-event">
@@ -639,7 +773,7 @@
 
     <!-- NEWSLETTERS -->
     <div class="page" id="page-newsletters">
-      <div class="page-header"><h2>Newsletters SY2025–2026</h2><p>Stay informed with our monthly newsletters</p></div>
+      <div class="page-header editable-area" contenteditable="false"><h2>Newsletters SY2025–2026</h2><p>Stay informed with our monthly newsletters</p></div>
       <div class="edit-hint">✏ Click below to edit (add links to PDFs)</div>
       <div class="editable-area" contenteditable="false">
         <ul class="newsletter-list">
@@ -655,7 +789,7 @@
 
     <!-- GALLERIES -->
     <div class="page" id="page-gallery-community">
-      <div class="page-header"><h2>Community Events</h2><p>Photo Gallery</p></div>
+      <div class="page-header editable-area" contenteditable="false"><h2>Community Events</h2><p>Photo Gallery</p></div>
       <div class="edit-hint">✏ Admin: Replace placeholders with real photos using img tags</div>
       <div class="gallery-section editable-area" contenteditable="false">
         <h3>Community Events</h3>
@@ -667,7 +801,7 @@
       </div>
     </div>
     <div class="page" id="page-gallery-battalion">
-      <div class="page-header"><h2>Falcon Battalion Events</h2><p>Photo Gallery</p></div>
+      <div class="page-header editable-area" contenteditable="false"><h2>Falcon Battalion Events</h2><p>Photo Gallery</p></div>
       <div class="edit-hint">✏ Admin: Replace placeholders with real photos</div>
       <div class="gallery-section editable-area" contenteditable="false">
         <h3>Falcon Battalion Events</h3>
@@ -679,7 +813,7 @@
       </div>
     </div>
     <div class="page" id="page-gallery-drill">
-      <div class="page-header"><h2>Drill/Raider Competitions</h2><p>Photo Gallery</p></div>
+      <div class="page-header editable-area" contenteditable="false"><h2>Drill/Raider Competitions</h2><p>Photo Gallery</p></div>
       <div class="edit-hint">✏ Admin: Replace placeholders with real photos</div>
       <div class="gallery-section editable-area" contenteditable="false">
         <div class="photo-grid">
@@ -689,7 +823,7 @@
       </div>
     </div>
     <div class="page" id="page-gallery-cadet">
-      <div class="page-header"><h2>Cadet of the Quarter Board</h2><p>Photo Gallery</p></div>
+      <div class="page-header editable-area" contenteditable="false"><h2>Cadet of the Quarter Board</h2><p>Photo Gallery</p></div>
       <div class="gallery-section editable-area" contenteditable="false">
         <div class="edit-hint">✏ Admin: Replace placeholders with real photos</div>
         <div class="photo-grid">
@@ -699,7 +833,7 @@
       </div>
     </div>
     <div class="page" id="page-gallery-nco">
-      <div class="page-header"><h2>NCO Promotion Boards</h2><p>Photo Gallery</p></div>
+      <div class="page-header editable-area" contenteditable="false"><h2>NCO Promotion Boards</h2><p>Photo Gallery</p></div>
       <div class="gallery-section editable-area" contenteditable="false">
         <div class="edit-hint">✏ Admin: Replace placeholders with real photos</div>
         <div class="photo-grid">
@@ -709,7 +843,7 @@
       </div>
     </div>
     <div class="page" id="page-gallery-colorgd">
-      <div class="page-header"><h2>Color Guards</h2><p>Florence High School Athletics Games · Photo Gallery</p></div>
+      <div class="page-header editable-area" contenteditable="false"><h2>Color Guards</h2><p>Florence High School Athletics Games · Photo Gallery</p></div>
       <div class="gallery-section editable-area" contenteditable="false">
         <div class="edit-hint">✏ Admin: Replace placeholders with real photos</div>
         <div class="photo-grid">
@@ -719,7 +853,7 @@
       </div>
     </div>
     <div class="page" id="page-gallery-jclc">
-      <div class="page-header"><h2>JCLC June 1–5, 2025</h2><p>Photo Gallery</p></div>
+      <div class="page-header editable-area" contenteditable="false"><h2>JCLC June 1–5, 2025</h2><p>Photo Gallery</p></div>
       <div class="gallery-section editable-area" contenteditable="false">
         <div class="edit-hint">✏ Admin: Replace placeholders with real photos</div>
         <div class="photo-grid">
@@ -729,7 +863,7 @@
       </div>
     </div>
     <div class="page" id="page-gallery-precamp">
-      <div class="page-header"><h2>JCLC PreCamp, May 27–30, 2025</h2><p>Photo Gallery</p></div>
+      <div class="page-header editable-area" contenteditable="false"><h2>JCLC PreCamp, May 27–30, 2025</h2><p>Photo Gallery</p></div>
       <div class="gallery-section editable-area" contenteditable="false">
         <div class="edit-hint">✏ Admin: Replace placeholders with real photos</div>
         <div class="photo-grid">
@@ -741,7 +875,7 @@
 
     <!-- FAQs -->
     <div class="page" id="page-faqs">
-      <div class="page-header"><h2>FAQs</h2><p>Frequently Asked Questions</p></div>
+      <div class="page-header editable-area" contenteditable="false"><h2>FAQs</h2><p>Frequently Asked Questions</p></div>
       <div class="edit-hint">✏ Click below to edit</div>
       <div class="editable-area" contenteditable="false">
         <div class="faq-item">
@@ -769,7 +903,7 @@
 
     <!-- DOWNLOADS -->
     <div class="page" id="page-downloads">
-      <div class="page-header"><h2>Helpful Downloads, Links and Documents</h2><p>Resources for cadets and parents</p></div>
+      <div class="page-header editable-area" contenteditable="false"><h2>Helpful Downloads, Links and Documents</h2><p>Resources for cadets and parents</p></div>
       <div class="edit-hint">✏ Click below to edit</div>
       <div class="editable-area" contenteditable="false">
         <ul class="newsletter-list">
@@ -785,7 +919,7 @@
 
     <!-- STAFF -->
     <div class="page" id="page-staff">
-      <div class="page-header"><h2>JROTC Staff</h2><p>Florence High School Falcon Battalion instructors and support staff</p></div>
+      <div class="page-header editable-area" contenteditable="false"><h2>JROTC Staff</h2><p>Florence High School Falcon Battalion instructors and support staff</p></div>
       <div class="edit-hint">✏ Click below to edit</div>
       <div class="editable-area" contenteditable="false">
         <table class="staff-table">
@@ -801,7 +935,7 @@
 
     <!-- TEAMS -->
     <div class="page" id="page-teams">
-      <div class="page-header"><h2>JROTC Teams</h2><p>Competitive teams and activities</p></div>
+      <div class="page-header editable-area" contenteditable="false"><h2>JROTC Teams</h2><p>Competitive teams and activities</p></div>
       <div class="edit-hint">✏ Click below to edit</div>
       <div class="content-body editable-area" contenteditable="false">
         <h3>Drill Team</h3>
@@ -817,7 +951,7 @@
 
     <!-- DESCRIPTION -->
     <div class="page" id="page-description">
-      <div class="page-header"><h2>Description of the Course</h2><p>About the JROTC curriculum</p></div>
+      <div class="page-header editable-area" contenteditable="false"><h2>Description of the Course</h2><p>About the JROTC curriculum</p></div>
       <div class="edit-hint">✏ Click below to edit</div>
       <div class="content-body editable-area" contenteditable="false">
         <p>The Army Junior Reserve Officers' Training Corps (JROTC) is a leadership education program. Students earn elective credit while developing essential life skills.</p>
@@ -832,7 +966,7 @@
 
     <!-- HISTORY & CREED -->
     <div class="page" id="page-history">
-      <div class="page-header"><h2>JROTC History & Creed</h2></div>
+      <div class="page-header editable-area" contenteditable="false"><h2>JROTC History & Creed</h2></div>
       <div class="edit-hint">✏ Click below to edit</div>
       <div class="content-body editable-area" contenteditable="false">
         <h3>History of JROTC</h3>
@@ -845,7 +979,7 @@
 
     <!-- INSTRUCTORS -->
     <div class="page" id="page-instructors">
-      <div class="page-header"><h2>Meet the Instructors</h2><p>The people leading our battalion</p></div>
+      <div class="page-header editable-area" contenteditable="false"><h2>Meet the Instructors</h2><p>The people leading our battalion</p></div>
       <div class="edit-hint">✏ Click below to edit</div>
       <div class="content-body editable-area" contenteditable="false">
         <h3>Senior Army Instructor</h3>
@@ -862,7 +996,7 @@
 
     <!-- ASSIGNMENTS -->
     <div class="page" id="page-assignments">
-      <div class="page-header"><h2>Submit Assignments</h2><p>Turn in your work here</p></div>
+      <div class="page-header editable-area" contenteditable="false"><h2>Submit Assignments</h2><p>Turn in your work here</p></div>
       <div class="content-body">
         <p>Use the form below to submit your assignments to your instructor. Make sure to include your full name, rank, and assignment title.</p>
       </div>
@@ -876,7 +1010,7 @@
 
     <!-- CONTACT -->
     <div class="page" id="page-contact">
-      <div class="page-header"><h2>Contact Us</h2><p>Get in touch with the JROTC program</p></div>
+      <div class="page-header editable-area" contenteditable="false"><h2>Contact Us</h2><p>Get in touch with the JROTC program</p></div>
       <div class="edit-hint">✏ Click below to edit contact info</div>
       <div class="contact-grid editable-area" contenteditable="false">
         <div class="contact-box">
@@ -914,22 +1048,75 @@
 
 <!-- ADMIN LOGIN MODAL -->
 <div class="modal-overlay" id="loginModal">
-  <div class="modal">
-    <button class="modal-close" onclick="closeLogin()">✕</button>
-    <h3>Admin Login</h3>
-    <p style="font-size:13px;color:#777;margin-bottom:20px;">Only authorized staff may edit this site.</p>
-    <div class="form-group"><label>Username</label><input type="text" id="loginUser" placeholder="Username"></div>
-    <div class="form-group"><label>Password</label><input type="password" id="loginPass" placeholder="Password"></div>
-    <p id="loginError">Invalid username or password.</p>
-    <button class="btn btn-gold" onclick="doLogin()" style="width:100%;margin-top:8px;">Login</button>
+  <div class="login-card">
+    <button class="login-close" onclick="closeLogin()">✕</button>
+    <div class="login-emblem">
+      <svg viewBox="0 0 60 60" width="60" height="60" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="30" cy="30" r="28" fill="none" stroke="#c8952a" stroke-width="1.5"/>
+        <circle cx="30" cy="30" r="22" fill="#0d2757"/>
+        <path d="M30,12 L40,17 L40,30 Q40,40 30,45 Q20,40 20,30 L20,17 Z" fill="#1455b8" stroke="#c8952a" stroke-width="1"/>
+        <path d="M30,12 L40,17 L40,21 L20,21 L20,17 Z" fill="#1a5fd4"/>
+        <text x="30" y="19" text-anchor="middle" font-family="Oswald,sans-serif" font-size="4" fill="white" letter-spacing="0.5">JROTC</text>
+        <path d="M30,28 Q26,25 21,27 Q24,29 27,30 Z" fill="#4a7fd4"/>
+        <path d="M30,28 Q34,25 39,27 Q36,29 33,30 Z" fill="#4a7fd4"/>
+        <ellipse cx="30" cy="31" rx="4" ry="5" fill="#0d2757"/>
+        <circle cx="30" cy="26" r="3.5" fill="#0d2757"/>
+        <path d="M32,26 L35,27 L32.5,28 Z" fill="#c8952a"/>
+        <ellipse cx="30" cy="22" rx="1.5" ry="2.5" fill="#ff9900" opacity="0.9"/>
+        <ellipse cx="30" cy="22.5" rx="0.9" ry="1.6" fill="#ffde00"/>
+      </svg>
+    </div>
+    <div class="login-title">Battalion Staff Portal</div>
+    <div class="login-subtitle">Florence High School · Falcon Battalion</div>
+    <div class="login-divider"></div>
+    <div id="loginView">
+      <div class="login-field">
+        <label>Staff Name</label>
+        <input type="text" id="loginUser" placeholder="Enter your name" autocomplete="username"/>
+      </div>
+      <div class="login-field">
+        <label>Password</label>
+        <div class="pw-wrap">
+          <input type="password" id="loginPass" placeholder="Enter password" autocomplete="current-password"/>
+          <span class="pw-toggle" onclick="togglePw()">👁</span>
+        </div>
+      </div>
+      <div class="login-remember">
+        <input type="checkbox" id="rememberMe" checked/>
+        <label for="rememberMe">Keep me logged in for 30 days</label>
+      </div>
+      <p id="loginError">Incorrect name or password. Try again.</p>
+      <button class="login-btn" onclick="doLogin()">
+        <span>Sign In</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+      <div class="login-forgot" onclick="showForgot()">Forgot password?</div>
+    </div>
+    <div id="forgotView" style="display:none">
+      <p style="font-size:13px;color:#aaa;margin-bottom:16px;">Contact your Senior Army Instructor to reset your password.</p>
+      <div class="login-field">
+        <label>SAI Email</label>
+        <input type="email" placeholder="Contact your SAI" readonly style="background:#1a2a4a;color:#888;"/>
+      </div>
+      <button class="login-btn" onclick="showLogin()">← Back to Login</button>
+    </div>
+    <div class="login-footer">Authorized Personnel Only · Falcon Battalion</div>
   </div>
 </div>
 
 <!-- ADMIN TOOLBAR -->
 <div id="adminToolbar">
-  <p>✏ ADMIN MODE ACTIVE</p>
-  <button onclick="saveChanges()">💾 Save Changes</button>
-  <button onclick="logoutAdmin()">Logout</button>
+  <p>✏ ADMIN MODE — Click any highlighted area to edit</p>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+    <button onclick="saveChanges()">💾 Save</button>
+    <button onclick="document.execCommand('bold')">B</button>
+    <button onclick="document.execCommand('italic')">I</button>
+    <button onclick="document.execCommand('underline')">U</button>
+    <button onclick="insertLink()">🔗 Link</button>
+    <button onclick="viewLog()">📋 Change Log</button>
+    <button onclick="clearSaved()" style="background:#c0392b;color:white;">🗑 Clear Saved</button>
+    <button onclick="logoutAdmin()">🔓 Logout</button>
+  </div>
 </div>
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
@@ -986,9 +1173,25 @@
   };
 
   // ── ADMIN AUTH ──
-  var ADMIN_USER = 'Battalion Staff';
-  var ADMIN_PASS = 'Falcon@6BDE';
+  // One shared staff account
+  var STAFF_ACCOUNTS = [
+    { name: 'Battalion Staff', pass: 'Falcon@6BDE' },
+  ];
+
   var isAdmin = false;
+  var currentStaff = '';
+
+  // Check for persistent session on page load
+  (function checkSession() {
+    try {
+      var session = JSON.parse(localStorage.getItem('jrotc_session') || 'null');
+      if (session && session.name && session.expires > Date.now()) {
+        currentStaff = session.name;
+        isAdmin = true;
+        enableAdminMode();
+      }
+    } catch(e) {}
+  })();
 
   window.openLogin = function() {
     if (isAdmin) { window.logoutAdmin(); return; }
@@ -996,29 +1199,73 @@
     document.getElementById('loginError').style.display = 'none';
     document.getElementById('loginUser').value = '';
     document.getElementById('loginPass').value = '';
+    setTimeout(function() {
+      var u = document.getElementById('loginUser');
+      if (u) u.focus();
+    }, 150);
   };
 
   window.closeLogin = function() {
     document.getElementById('loginModal').classList.remove('open');
   };
 
+  window.togglePw = function() {
+    var input = document.getElementById('loginPass');
+    if (input) input.type = input.type === 'password' ? 'text' : 'password';
+  };
+
+  window.showForgot = function() {
+    document.getElementById('loginView').style.display = 'none';
+    document.getElementById('forgotView').style.display = 'block';
+  };
+
+  window.showLogin = function() {
+    document.getElementById('forgotView').style.display = 'none';
+    document.getElementById('loginView').style.display = 'block';
+  };
+
   window.doLogin = function() {
-    var u = document.getElementById('loginUser').value;
+    var u = document.getElementById('loginUser').value.trim();
     var p = document.getElementById('loginPass').value;
-    if (u === ADMIN_USER && p === ADMIN_PASS) {
+    var remember = document.getElementById('rememberMe').checked;
+    var matched = null;
+    for (var i = 0; i < STAFF_ACCOUNTS.length; i++) {
+      if (STAFF_ACCOUNTS[i].name.toLowerCase() === u.toLowerCase() &&
+          STAFF_ACCOUNTS[i].pass === p) {
+        matched = STAFF_ACCOUNTS[i];
+        break;
+      }
+    }
+    if (matched) {
+      currentStaff = matched.name;
       isAdmin = true;
+      if (remember) {
+        var expires = Date.now() + (30 * 24 * 60 * 60 * 1000);
+        localStorage.setItem('jrotc_session', JSON.stringify({ name: matched.name, expires: expires }));
+      }
       window.closeLogin();
       enableAdminMode();
+      logChange('Logged in');
     } else {
-      document.getElementById('loginError').style.display = 'block';
+      var err = document.getElementById('loginError');
+      err.style.display = 'block';
+      var card = document.querySelector('.login-card');
+      if (card) {
+        card.style.animation = 'none';
+        void card.offsetHeight;
+        card.style.animation = 'shake .4s ease';
+      }
     }
   };
 
   function enableAdminMode() {
     document.body.classList.add('admin-mode');
-    document.getElementById('adminStatus').style.display = 'inline';
-    document.getElementById('adminBtn').textContent = 'Logout';
-    document.getElementById('adminToolbar').classList.add('visible');
+    var status = document.getElementById('adminStatus');
+    var nameEl = document.getElementById('loggedInName');
+    var toolbar = document.getElementById('adminToolbar');
+    if (status) status.style.display = 'inline';
+    if (nameEl) nameEl.textContent = currentStaff;
+    if (toolbar) toolbar.classList.add('visible');
     var areas = document.querySelectorAll('.editable-area');
     for (var i = 0; i < areas.length; i++) {
       areas[i].contentEditable = 'true';
@@ -1026,16 +1273,29 @@
   }
 
   window.logoutAdmin = function() {
+    if (!confirm('Log out of admin mode?')) return;
     isAdmin = false;
+    currentStaff = '';
+    localStorage.removeItem('jrotc_session');
     document.body.classList.remove('admin-mode');
-    document.getElementById('adminStatus').style.display = 'none';
-    document.getElementById('adminBtn').textContent = 'Admin Login';
-    document.getElementById('adminToolbar').classList.remove('visible');
+    var status = document.getElementById('adminStatus');
+    var toolbar = document.getElementById('adminToolbar');
+    if (status) status.style.display = 'none';
+    if (toolbar) toolbar.classList.remove('visible');
     var areas = document.querySelectorAll('.editable-area');
     for (var i = 0; i < areas.length; i++) {
       areas[i].contentEditable = 'false';
     }
   };
+
+  function logChange(action) {
+    try {
+      var log = JSON.parse(localStorage.getItem('jrotc_log') || '[]');
+      log.unshift({ staff: currentStaff, action: action, time: new Date().toLocaleString() });
+      if (log.length > 50) log = log.slice(0, 50);
+      localStorage.setItem('jrotc_log', JSON.stringify(log));
+    } catch(e) {}
+  }
 
   window.saveChanges = function() {
     try {
@@ -1045,10 +1305,28 @@
         data['block_' + i] = areas[i].innerHTML;
       }
       localStorage.setItem('jrotc_content', JSON.stringify(data));
-      alert('Changes saved!');
-    } catch(e) {
-      alert('Could not save: ' + e.message);
-    }
+      logChange('Saved changes');
+      var btn = document.querySelector('#adminToolbar button');
+      if (btn) {
+        var orig = btn.innerHTML;
+        btn.innerHTML = '✅ Saved!';
+        btn.style.background = '#27ae60';
+        btn.style.color = 'white';
+        setTimeout(function() { btn.innerHTML = orig; btn.style.background = ''; btn.style.color = ''; }, 2000);
+      }
+    } catch(e) { alert('Could not save: ' + e.message); }
+  };
+
+  window.viewLog = function() {
+    try {
+      var log = JSON.parse(localStorage.getItem('jrotc_log') || '[]');
+      if (log.length === 0) { alert('No changes logged yet.'); return; }
+      var msg = 'RECENT CHANGES:\n\n';
+      for (var i = 0; i < Math.min(log.length, 15); i++) {
+        msg += log[i].time + '\n  ' + log[i].staff + ' — ' + log[i].action + '\n\n';
+      }
+      alert(msg);
+    } catch(e) {}
   };
 
   // Restore saved content
@@ -1063,15 +1341,29 @@
     }
   } catch(e) {}
 
-  // Enter key on login modal
+  // Enter key submits login
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Enter') {
       var modal = document.getElementById('loginModal');
-      if (modal && modal.classList.contains('open')) {
-        window.doLogin();
-      }
+      if (modal && modal.classList.contains('open')) { window.doLogin(); }
     }
   });
+
+  window.insertLink = function() {
+    var url = prompt('Enter URL:');
+    if (url) {
+      var text = prompt('Enter link text:');
+      if (text) document.execCommand('insertHTML', false, '<a href="' + url + '" target="_blank">' + text + '</a>');
+    }
+  };
+
+  window.clearSaved = function() {
+    if (confirm('Clear all saved edits and restore defaults?')) {
+      localStorage.removeItem('jrotc_content');
+      alert('Cleared! Refresh the page.');
+    }
+  };
+
 
 })();
 </script>
